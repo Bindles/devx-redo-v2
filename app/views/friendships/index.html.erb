@@ -1,3 +1,4 @@
+<%# app/views/friendships/index.html.erb %>
 <h1 class="text-center mb-4">Search Users</h1>
 
 <!-- Search Form -->
@@ -9,6 +10,8 @@
     </div>
   <% end %>
 </div>
+
+<% if params[:query].present? %>
 
 <!-- Search Results -->
 <h2 class="text-center mt-5">Results</h2>
@@ -49,6 +52,8 @@
     <p class="text-muted text-center">No users found matching your search.</p>
   <% end %>
 </div>
+
+<% end %>
 
 <hr class="my-5">
 

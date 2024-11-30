@@ -1,25 +1,45 @@
+<%# profiles/edit.html.erb (view): %>
 <h1>Edit Profile</h1>
-
-<%= form_with model: @user, url: user_profile_path(@user), method: :patch, local: true do |form| %>
+<%= form_with model: @user, url: user_profile_path(@user), method: :patch, local: true, html: { multipart: true } do |form| %>
   <div class="form-group">
     <%= form.label :username %>
     <%= form.text_field :username, class: "form-control", value: @user.username %>
   </div>
 
-  <%= form.fields_for :profile, @profile do |profile_form| %>
-    <div class="form-group">
-      <%= profile_form.label :bio %>
-      <%= profile_form.text_area :bio, class: "form-control", value: @profile.bio %>
-    </div>
+<%= form.fields_for :profile, @profile do |profile_form| %>
+  <div class="form-group">
+    <%= profile_form.label :bio %>
+    <%= profile_form.text_area :bio, class: "form-control", value: @profile.bio %>
+  </div>
 
-    <div class="form-group">
-      <%= profile_form.label :avatar_url %>
-      <%= profile_form.text_field :avatar_url, class: "form-control", value: @profile.avatar_url %>
+  <div class="form-group">
+    <%= profile_form.label :avatar_url, "Avatar (Upload a file or enter a URL below)" %>
+    <div id="image-preview-container">
+      <img id="image-preview" src="<%= @profile.avatar_url.presence || '#' %>" style="display: <%= @profile.avatar_url.present? ? 'block' : 'none' %>; max-width: 150px; margin-bottom: 10px;" alt="Preview">
     </div>
-  <% end %>
+    <%= profile_form.file_field :avatar_file, class: "form-control", id: "image-upload" %>
+  </div>
+
+  <div class="form-group">
+    <%= profile_form.label :avatar_url_text, "Avatar URL (Optional, if not uploading a file)" %>
+    <%= profile_form.text_field :avatar_url_text, class: "form-control", value: @profile.avatar_url %>
+  </div>
+<% end %>
+
+  <%= form.select :category, 
+      options_for_select(Profile.all.pluck(:avatar_url).uniq), 
+      { include_blank: true, class: "form-select block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" },
+      { id: "category-dropdown" } %>
 
   <%= form.submit "Save Changes", class: "btn btn-success" %>
   <%= link_to "Cancel", user_profile_path(@user), class: "btn btn-secondary" %>
+<% end %>
+
+<%= (Profile.all.pluck(:avatar_url).uniq) %> <br>
+all:<br>
+<% Profile.all.pluck(:avatar_url).uniq.each do |x| %>
+<%= x %><br>
+<img src="<%= x %>" width="100">
 <% end %>
 
 
@@ -27,13 +47,30 @@
 
 
 <script>
-/* Resize the avatar image */
-.avatar-img {
-  width: 50px;   /* Set your desired width */
-  height: 50px;  /* Set your desired height */
-  object-fit: cover; /* Ensures the image covers the area without distortion */
-  border-radius: 50%; /* Makes the avatar circular */
-  background-color: #f0f0f0; /* Optional: a background color in case the image fails to load */
-}
+document.addEventListener("DOMContentLoaded", () => {
+  const fileInput = document.getElementById("image-upload");
+  const previewImage = document.getElementById("image-preview");
+  const previewContainer = document.getElementById("image-preview-container");
+
+  if (fileInput) {
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+
+      if (file) {
+        const reader = new FileReader();
+
+        reader.onload = (e) => {
+          previewImage.src = e.target.result; // Set the image source to the base64 data
+          previewImage.style.display = "block"; // Show the image preview
+        };
+
+        reader.readAsDataURL(file); // Read the file and trigger the onload
+      } else {
+        previewImage.src = "#";
+        previewImage.style.display = "none"; // Hide the image preview
+      }
+    });
+  }
+});
 
 </script>

@@ -1,3 +1,4 @@
+# app/controllers/friendships_controller.rb
 class FriendshipsController < ApplicationController
   before_action :authenticate_user!
 
