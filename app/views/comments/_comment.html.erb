@@ -1,0 +1,4 @@
+<div id="<%= dom_id(comment) %>">
+  <%= comment.content %> - <%= comment.user.email %>
+  <%= time_tag comment.created_at %>
+</div>
