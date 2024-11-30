@@ -11,6 +11,9 @@ Rails.application.routes.draw do
     patch :update_profile, on: :member
   end
 
+  resources :friendships, only: [ :index, :create, :destroy ]
+  # resources :friendships, path: 'friends', as: 'friends' #how to change name to friends with path
+
   resources :posts do
     resources :comments, only: [ :create ] # , defaults: { commentable: 'Post' }
   end
