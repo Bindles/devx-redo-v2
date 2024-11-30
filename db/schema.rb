@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_30_082907) do
+ActiveRecord::Schema[8.0].define(version: 2024_11_30_204800) do
   create_table "comments", force: :cascade do |t|
     t.text "content"
     t.integer "user_id", null: false
@@ -22,6 +22,15 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_30_082907) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "conversations", force: :cascade do |t|
+    t.integer "user1_id", null: false
+    t.integer "user2_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user1_id"], name: "index_conversations_on_user1_id"
+    t.index ["user2_id"], name: "index_conversations_on_user2_id"
+  end
+
   create_table "friendships", force: :cascade do |t|
     t.integer "user_id", null: false
     t.integer "friend_id", null: false
@@ -30,6 +39,16 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_30_082907) do
     t.index ["friend_id"], name: "index_friendships_on_friend_id"
     t.index ["user_id", "friend_id"], name: "index_friendships_on_user_id_and_friend_id", unique: true
     t.index ["user_id"], name: "index_friendships_on_user_id"
+  end
+
+  create_table "messages", force: :cascade do |t|
+    t.integer "conversation_id", null: false
+    t.integer "sender_id", null: false
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["conversation_id"], name: "index_messages_on_conversation_id"
+    t.index ["sender_id"], name: "index_messages_on_sender_id"
   end
 
   create_table "posts", force: :cascade do |t|
@@ -66,8 +85,12 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_30_082907) do
   end
 
   add_foreign_key "comments", "users"
+  add_foreign_key "conversations", "users", column: "user1_id"
+  add_foreign_key "conversations", "users", column: "user2_id"
   add_foreign_key "friendships", "users"
   add_foreign_key "friendships", "users", column: "friend_id"
+  add_foreign_key "messages", "conversations"
+  add_foreign_key "messages", "users", column: "sender_id"
   add_foreign_key "posts", "users"
   add_foreign_key "profiles", "users"
 end

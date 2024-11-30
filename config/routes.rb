@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get "conversations/index"
+  get "conversations/show"
   devise_for :users, controllers: {
     sessions: "users/sessions",
     registrations: "users/registrations"
@@ -13,6 +15,10 @@ Rails.application.routes.draw do
 
   resources :friendships, only: [ :index, :create, :destroy ]
   # resources :friendships, path: 'friends', as: 'friends' #how to change name to friends with path
+
+  resources :conversations, only: [ :index, :show, :create ] do
+    resources :messages, only: [ :create ]
+  end
 
   resources :posts do
     resources :comments, only: [ :create ] # , defaults: { commentable: 'Post' }

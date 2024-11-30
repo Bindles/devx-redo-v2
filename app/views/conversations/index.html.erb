@@ -1,0 +1,10 @@
+<h1>Inbox</h1>
+
+<ul>
+  <% @conversations.each do |conversation| %>
+    <% friend = conversation.user1 == current_user ? conversation.user2 : conversation.user1 %>
+    <li>
+      <%= link_to friend.username, conversation_path(conversation) %>
+    </li>
+  <% end %>
+</ul>
