@@ -1,5 +1,8 @@
 Rails.application.routes.draw do
-  devise_for :users
+  devise_for :users, controllers: {
+    sessions: "users/sessions",
+    registrations: "users/registrations"
+  }
 
   # Nested profile routes under users
   resources :users, only: [ :edit, :update ] do  # only: [:edit, :update]
