@@ -1,8 +1,17 @@
 Rails.application.routes.draw do
   devise_for :users
-  resources :posts do
-    resources :comments, only: [ :create ]
+
+  # Nested profile routes under users
+  resources :users, only: [ :edit, :update ] do  # only: [:edit, :update]
+    resource :profile, only: [ :show, :edit, :update ]
+    patch :update_username, on: :member
+    patch :update_profile, on: :member
   end
+
+  resources :posts do
+    resources :comments, only: [ :create ] # , defaults: { commentable: 'Post' }
+  end
+
 
   root "posts#index"
 

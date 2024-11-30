@@ -1,4 +1,5 @@
 <div id="<%= dom_id(comment) %>">
   <%= comment.content %> - <%= comment.user.email %>
   <%= time_tag comment.created_at %>
+  <small>Posted on <%= comment.created_at.strftime('%b %d, %Y at %I:%M %p') %></small>
 </div>

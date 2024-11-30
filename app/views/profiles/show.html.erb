@@ -1,0 +1,29 @@
+<head>
+  <style>
+    /* Resize the avatar image */
+    .avatar-img {
+      width: 145px;   /* Set your desired width */
+      height: 145px;  /* Set your desired height */
+      object-fit: cover; /* Ensures the image covers the area without distortion */
+      border-radius: 50%; /* Makes the avatar circular */
+      background-color: #f0f0f0; /* Optional: a background color in case the image fails to load */
+    }
+
+  </style>  
+</head>
+<%= current_user.inspect %>
+<h1><%= @user.email %> (<%= @user.email %>)'s Profile</h1>
+<p><strong>Bio:</strong> <%= @profile.bio.presence || "No bio provided" %></p>
+<p><strong>Avatar:</strong></p>
+<% if @profile.avatar_url.present? %>
+  <img src="<%= @profile.avatar_url %>" alt="<%= @user.email %>'s Avatar" class="avatar-img">
+<% else %>
+  <p>No avatar set.</p>
+<% end %>
+
+<%= link_to "Edit Profile", edit_user_profile_path(@user), class: "btn btn-primary" %>
+
+
+
+
+
