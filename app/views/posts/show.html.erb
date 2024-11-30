@@ -1,5 +1,6 @@
 <h1><%= @post.title %></h1>
 <p><%= @post.body %></p>
+<%= @post.user.email %> (id: <%= @post.user.id %> )
 
 <h2>Comments</h2>
 <%= turbo_stream_from @post %>

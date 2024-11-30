@@ -8,5 +8,12 @@
     <strong>Body:</strong>
     <%= post.body %>
   </p>
+  <% if @post%>
+    <%= post.user %>
+  <p>
+    <strong>Body:</strong>
+    <%= @post.user.inspect %>
+  </p> 
+  <% end %>
 
 </div>
