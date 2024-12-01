@@ -69,12 +69,19 @@
               <h5 class="card-title"><%= friend.username %></h5>
 
               <!-- Unread Message Indicator -->
-              <%# unread_count = conversation.messages.where(read: false, recipient: current_user).count %>
-              <%# if unread_count.positive? %>
-                <span class="badge bg-danger">Unread: <%#= unread_count %></span>
-              <%# else %>
+              <% unread_count = conversation.unread_count %>
+              <% if unread_count.positive? %>
+                <span class="badge bg-danger">Unread: <%= unread_count %></span>
+              <% else %>
                 <span class="badge bg-success">All Read</span>
-              <%# end %>              
+              <% end %>
+
+              <!-- Unread Message Indicator -->
+              <% if conversation.unread_count.positive? %>
+                <span class="badge bg-danger">Unread: <%= conversation.unread_count %></span>
+              <% else %>
+                <span class="badge bg-success">All Read</span>
+              <% end %>                          
               
               <!-- Link to Conversation -->
               <%= link_to "Open Conversation", conversation_path(conversation), class: "btn btn-primary mt-3" %>

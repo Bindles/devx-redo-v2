@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2024_11_30_204800) do
+ActiveRecord::Schema[8.0].define(version: 2024_12_01_030942) do
   create_table "comments", force: :cascade do |t|
     t.text "content"
     t.integer "user_id", null: false
@@ -27,6 +27,7 @@ ActiveRecord::Schema[8.0].define(version: 2024_11_30_204800) do
     t.integer "user2_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user1_unread_count", default: 0, null: false
     t.index ["user1_id"], name: "index_conversations_on_user1_id"
     t.index ["user2_id"], name: "index_conversations_on_user2_id"
   end

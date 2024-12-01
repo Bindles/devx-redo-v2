@@ -1,0 +1,49 @@
+<h1 class="text-center mb-4">Unread Messages</h1>
+
+<div class="container">
+  <% if @messages_preview.any? %>
+    <% @messages_preview.each do |preview| %>
+      <div class="card mb-4">
+        <div class="card-body">
+          <!-- Friend's Info -->
+          <div class="d-flex align-items-center mb-3">
+            <img src="<%= preview[:friend].profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                 alt="Avatar"
+                 class="rounded-circle me-3"
+                 style="width: 50px; height: 50px; object-fit: cover;">
+            <h5 class="mb-0">
+              <%= preview[:friend].username %>
+              <span class="badge bg-danger ms-2">
+                <%= pluralize(preview[:conversation].unread_count, 'unread message') %>
+              </span>
+            </h5>
+          </div>
+
+          <!-- Preview of Unread Messages -->
+          <% if preview[:unread_messages].any? %>
+            <div class="mb-3">
+              <h6>New Messages:</h6>
+              <ul class="list-group">
+                <% preview[:unread_messages].each do |message| %>
+                  <li class="list-group-item">
+                    <%= truncate(message.content, length: 50) %>
+                    <small class="text-muted float-end">
+                      <%= message.created_at.strftime("%b %d, %H:%M") %>
+                    </small>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          <% else %>
+            <p class="text-muted">No new messages.</p>
+          <% end %>
+
+          <!-- Link to Full Conversation -->
+          <%= link_to "View Full Conversation", conversation_path(preview[:conversation]), class: "btn btn-primary" %>
+        </div>
+      </div>
+    <% end %>
+  <% else %>
+    <p class="text-muted text-center">No unread messages available.</p>
+  <% end %>
+</div>

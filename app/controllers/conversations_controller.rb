@@ -1,3 +1,4 @@
+# app/controllers/conversations_controller.rb
 class ConversationsController < ApplicationController
   before_action :authenticate_user!
 
@@ -22,10 +23,16 @@ class ConversationsController < ApplicationController
     end
   end
 
-  def show
-    @conversation = Conversation.find(params[:id])
-    @messages = @conversation.messages.order(created_at: :asc)
+def show
+  @conversation = Conversation.find(params[:id])
+  @messages = @conversation.messages.order(created_at: :asc)
+
+  # Reset unread count for the recipient
+  if @conversation.user1 == current_user || @conversation.user2 == current_user
+    @conversation.reset_unread_count
   end
+end
+
 
   def create
     user = User.find(params[:user_id])
