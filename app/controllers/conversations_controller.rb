@@ -3,23 +3,23 @@ class ConversationsController < ApplicationController
 
   def index
     # Get all conversations for the current user
-    @conversations = Conversation.joins(
-      "INNER JOIN users AS user1s ON user1s.id = conversations.user1_id
-       INNER JOIN users AS user2s ON user2s.id = conversations.user2_id"
-    )
+    @conversations = Conversation
+                      .where("user1_id = :user_id OR user2_id = :user_id", user_id: current_user.id)
+                      .includes(:user1, :user2) # Preload associated users for better performance
 
-    # Filter conversations based on query
+    # Filter conversations for search results if query is provided
+    @searched_conversations = []
     if params[:query].present?
       query = "%#{params[:query]}%"
-      @conversations = @conversations.where(
+      @searched_conversations = Conversation.joins(
+        "INNER JOIN users AS user1s ON user1s.id = conversations.user1_id
+         INNER JOIN users AS user2s ON user2s.id = conversations.user2_id"
+      ).where(
         "(user1s.username LIKE :query AND conversations.user2_id = :user_id) OR
          (user2s.username LIKE :query AND conversations.user1_id = :user_id)",
         query: query, user_id: current_user.id
       )
     end
-
-    # Eager load user data for performance optimization
-    @conversations = @conversations.includes(:user1, :user2)
   end
 
   def show
