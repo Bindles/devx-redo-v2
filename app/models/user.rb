@@ -20,6 +20,14 @@ class User < ApplicationRecord
   has_many :inverse_friendships, class_name: "Friendship", foreign_key: "friend_id"
   has_many :inverse_friends, through: :inverse_friendships, source: :user
 
+  # MIGHT ERASE
+  # To get all conversations for a user, you could combine the two associations (for message)
+  # satisfies error > conversations OF =>
+  # @messages_preview = current_user.conversations.includes(:messages).map do |conversation|
+  def conversations
+    conversations_as_user1 + conversations_as_user2
+  end
+
 
 
   private

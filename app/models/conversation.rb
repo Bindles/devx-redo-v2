@@ -11,14 +11,22 @@ class Conversation < ApplicationRecord
   # Ensure no duplicate conversations between the same users
   validates :user1_id, uniqueness: { scope: :user2_id }
 
-  # Increment unread_count
-  def increment_unread_count
-    update!(unread_count: unread_count + 1)
+  # Increment the unread count for the recipient
+  def increment_unread_count_for(user)
+    if user == user1
+      update!(user2_unread_count: user2_unread_count + 1)
+    elsif user == user2
+      update!(user1_unread_count: user1_unread_count + 1)
+    end
   end
 
-  # Reset unread_count to 0
-  def reset_unread_count
-    update!(unread_count: 0)
+  # Reset unread count for a specific user
+  def reset_unread_count_for(user)
+    if user == user1
+      update!(user1_unread_count: 0)
+    elsif user == user2
+      update!(user2_unread_count: 0)
+    end
   end
 
   def mark_as_read

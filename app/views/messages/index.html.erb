@@ -14,7 +14,7 @@
             <h5 class="mb-0">
               <%= preview[:friend].username %>
               <span class="badge bg-danger ms-2">
-                <%= pluralize(preview[:conversation].unread_count, 'unread message') %>
+                <%= pluralize(preview[:conversation].user1 == current_user ? preview[:conversation].user1_unread_count : preview[:conversation].user2_unread_count, 'unread message') %>
               </span>
             </h5>
           </div>

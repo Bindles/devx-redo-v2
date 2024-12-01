@@ -16,10 +16,23 @@ class Message < ApplicationRecord
 
   private
 
-  def increment_unread_count_for_recipient
-    recipient = (conversation.user1 == sender) ? conversation.user2 : conversation.user1
-    conversation.increment_unread_count if recipient
+
+# message.rb
+def increment_unread_count_for_recipient
+  conversation.update!(sender == conversation.user1 ? { user2_unread_count: conversation.user2_unread_count + 1 } : { user1_unread_count: conversation.user1_unread_count + 1 })
+end
+
+
+def increment_unread_count_for_recipientx
+  recipient = (conversation.user1 == sender) ? conversation.user2 : conversation.user1
+  conversation.update!(recipient == conversation.user1 ? { user1_unread_count: conversation.user1_unread_count + 1 } : { user2_unread_count: conversation.user2_unread_count + 1 })
+end
+
+  def increment_unread_count_for_recipientz
+    recipient = (conversation.user1 = sender) ? conversation.user2 : conversation.user1
+    conversation.increment_unread_count_for(recipient) if recipient
   end
+
 
   # Increment unread_count in the conversation after message creation
   def update_conversation_unread_count

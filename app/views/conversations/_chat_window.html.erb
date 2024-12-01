@@ -1,0 +1,20 @@
+<div class="chat-window p-4" style="height: 80vh; overflow-y: auto;">
+  <h4><%= conversation.user1 == current_user ? conversation.user2.username : conversation.user1.username %></h4>
+  <div class="messages">
+    <% messages.each do |message| %>
+      <div class="mb-3">
+        <strong><%= message.sender == current_user ? "You" : message.sender.username %>:</strong>
+        <p><%= message.content %></p>
+      </div>
+    <% end %>
+  </div>
+</div>
+
+<div class="chat-input mt-4">
+  <%= form_with model: [conversation, Message.new], local: false do |form| %>
+    <div class="input-group">
+      <%= form.text_field :content, class: "form-control", placeholder: "Type a message..." %>
+      <button type="submit" class="btn btn-primary">Send</button>
+    </div>
+  <% end %>
+</div>

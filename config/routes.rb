@@ -18,6 +18,9 @@ Rails.application.routes.draw do
 
   resources :conversations, only: [ :index, :show, :create ] do
     resources :messages, only: [ :create ]
+    member do
+      get :show_conversation
+    end
   end
   resources :messages, only: [ :index ]
 
@@ -26,7 +29,7 @@ Rails.application.routes.draw do
     resources :comments, only: [ :create ] # , defaults: { commentable: 'Post' }
   end
 
-
+  get  "ci", to: "conversations#index_all"
   root "posts#index"
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

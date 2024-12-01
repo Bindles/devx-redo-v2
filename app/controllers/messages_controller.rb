@@ -16,17 +16,25 @@ class MessagesController < ApplicationController
   end
 
   def index
-    # Fetch all conversations for the current user
-    @conversations = Conversation.includes(:messages).where("user1_id = ? OR user2_id = ?", current_user.id, current_user.id)
+    @messages_preview = current_user
+                         .conversations
+                         .includes(:messages)  # Eager load messages
+                         .map do |conversation|
+                           # Ensure we're getting the correct friend and unread messages
+                           friend = conversation.user1 == current_user ? conversation.user2 : conversation.user1
 
-    # Prepare a list of conversations with unread messages
-    @messages_preview = @conversations.map do |conversation|
-      {
-        conversation: conversation,
-        friend: conversation.user1 == current_user ? conversation.user2 : conversation.user1,
-        unread_messages: conversation.messages.where(read: false).order(created_at: :asc).limit(2)
-      }
-    end
+                           # Fetch unread messages based on your logic (messages where created_at > conversation.updated_at)
+                           unread_messages = conversation.messages
+                                                         .where("created_at > ?", conversation.updated_at)
+                                                         .where.not(sender: current_user)
+
+                           # Prepare the preview data
+                           {
+                             conversation: conversation,
+                             friend: friend,
+                             unread_messages: unread_messages
+                           }
+                         end
   end
 
   private

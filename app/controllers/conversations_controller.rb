@@ -2,11 +2,26 @@
 class ConversationsController < ApplicationController
   before_action :authenticate_user!
 
+  def index_all
+    @active_conversations = Conversation
+    .where("user1_id = :user_id OR user2_id = :user_id", user_id: current_user.id)
+    .includes(:user1, :user2) # Preload associated users for better performance
+    @all_friends = current_user.friends
+  end
+
+  def show_conversation
+    @conversation = current_user.conversations.find(params[:id])
+    @messages = @conversation.messages.includes(:sender).order(created_at: :asc)
+    render partial: "chat_window", locals: { conversation: @conversation, messages: @messages }
+  end
+
   def index
     # Get all conversations for the current user
     @conversations = Conversation
                       .where("user1_id = :user_id OR user2_id = :user_id", user_id: current_user.id)
                       .includes(:user1, :user2) # Preload associated users for better performance
+
+    # @all_friends = current_user.friends
 
     # Filter conversations for search results if query is provided
     @searched_conversations = []
@@ -23,15 +38,21 @@ class ConversationsController < ApplicationController
     end
   end
 
-def show
-  @conversation = Conversation.find(params[:id])
-  @messages = @conversation.messages.order(created_at: :asc)
+  def show
+    @conversation = Conversation.find(params[:id])
+    @messages = @conversation.messages.order(created_at: :asc)
 
-  # Reset unread count for the recipient
-  if @conversation.user1 == current_user || @conversation.user2 == current_user
-    @conversation.reset_unread_count
+    # Reset unread count for the current user
+    @conversation.reset_unread_count_for(current_user)
+    p "######################"
+    Rails.logger.debug { @conversation.inspect } # Log data
+
+    # This renders a partial to update the Turbo Frame
+    respond_to do |format|
+      format.html # For direct visits
+      format.turbo_stream { render partial: "conversations/conversation", locals: { conversation: @conversation } }
+    end
   end
-end
 
 
   def create

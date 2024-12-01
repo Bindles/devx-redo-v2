@@ -1,0 +1,7 @@
+<h2>Conversation between <%= @conversation.user1_id %> and <%= @conversation.user2_id %></h2>
+
+<ul>
+  <% @conversation.messages.each do |message| %>
+    <li><%= message.content %> (Sent by User ID: <%= message.user_id %>)</li>
+  <% end %>
+</ul>

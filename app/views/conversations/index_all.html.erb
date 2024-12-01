@@ -1,0 +1,16 @@
+<%= turbo_frame_tag "conversation_frame" %>
+<h1>Conversations</h1>
+<ul class="list-group">
+  <% @active_conversations.each do |conversation| %>
+    <li class="list-group-item">
+      <turbo-frame id="conversation_<%= conversation.id %>">
+        <%= link_to(
+              "Open Conversation",
+              conversation_path(conversation),
+              data: { turbo_frame: "conversation_#{conversation.id}" },
+              class: "stretched-link"
+            ) %>
+      </turbo-frame>
+    </li>
+  <% end %>
+</ul>
