@@ -1,16 +1,40 @@
-<%= turbo_frame_tag :showc do %>
-  <h1>Chat with <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %></h1>
+<%= turbo_frame_tag :showc, class: "d-flex flex-column h-100" do %>
+  <!-- Chat Header: Display Friend's Name and Avatar -->
+  <div class="chat-header d-flex align-items-center p-3 bg-light border-bottom">
+    <img src="<%= @conversation.user1 == current_user ? @conversation.user2.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' : @conversation.user1.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+         alt="Avatar" class="rounded-circle" style="width: 50px; height: 50px; object-fit: cover;">
+    <h5 class="ms-3 mb-0">
+      <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %>
+    </h5>
+  </div>
 
   <%= turbo_stream_from @conversation %>
-
-  <div id="messages">
-    <% if @messages %>
-      <%= render @messages %>
+  <!-- Messages Section -->
+  <div class="chat-messages flex-grow-1 p-3" style="overflow-y: auto; background-color: #f8f9fa;">
+    <% @messages.each do |message| %>
+      <div class="d-flex mb-3 <%= 'justify-content-end' if message.sender == current_user %>">
+        <div class="<%= 'bg-primary text-white' if message.sender == current_user %> <%= 'bg-light' if message.sender != current_user %> p-2 rounded-3 max-w-75">
+          <div class="d-flex align-items-center">
+            <!-- Avatar for the other user or self -->
+            <% if message.sender != current_user %>
+              <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                   alt="Avatar" class="rounded-circle me-2" style="width: 30px; height: 30px; object-fit: cover;">
+            <% end %>
+            <!-- Message Content -->
+            <span><%= message.content %></span>
+          </div>
+        </div>
+      </div>
     <% end %>
   </div>
 
-  <%= form_with model: [@conversation, Message.new], local: false do |form| %>
-    <%= form.text_area :content, placeholder: "Type a message..." %>
-    <%= form.submit "Send" %>
-  <% end %>
+  <!-- Message Input Section -->
+  <div class="chat-input p-3 bg-light border-top">
+    <%= form_with model: [@conversation, Message.new], local: false do |form| %>
+      <div class="input-group">
+        <%= form.text_area :content, placeholder: "Type a message...", class: "form-control", rows: 1 %>
+        <button class="btn btn-primary" type="submit"><i class="bi bi-send"></i></button>
+      </div>
+    <% end %>
+  </div>
 <% end %>

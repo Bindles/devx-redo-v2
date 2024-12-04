@@ -1,104 +1,128 @@
-<h1 class="text-center mb-4">Conversations</h1>
+<div class="container-fluid d-flex" style="height: 100vh; overflow: hidden;">
+  <!-- Left Sidebar: Conversations and Friends -->
+  <div class="sidebar bg-light border-end p-3" style="width: 30%; overflow-y: auto;">
+    <h2 class="text-center mb-4">Conversations</h2>
 
-<!-- Search Form -->
-<div class="container">
-  <%= form_with url: conversations_path, method: :get, local: true, class: "d-flex justify-content-center" do |form| %>
-    <div class="input-group w-50">
-      <%= form.text_field :query, placeholder: "Search by username", class: "form-control" %>
-      <button class="btn btn-primary" type="submit">Search</button>
+    <!-- Search Form -->
+    <div class="mb-3">
+      <%= form_with url: conversations_path, method: :get, local: true, class: "d-flex" do |form| %>
+        <%= form.text_field :query, placeholder: "Search by username", class: "form-control me-2" %>
+        <%= form.submit "Search", class: "btn btn-primary" %>
+      <% end %>
     </div>
-  <% end %>
-</div>
 
-<% if params[:query].present? %>
-  <!-- Search Results -->
-  <h2 class="text-center mt-5">Search Results</h2>
-  <div class="container mt-4">
-    <% if @searched_conversations.any? %>
-      <div class="row">
-        <% @searched_conversations.each do |conversation| %>
-          <% friend = conversation.user1 == current_user ? conversation.user2 : conversation.user1 %>
-          <div class="col-md-4 mb-4">
-            <div class="card">
-              <div class="card-body text-center">
+    <!-- Search Results -->
+    <% if params[:query].present? %>
+      <h5 class="text-center mb-3">Search Results</h5>
+      <% if @searched_conversations.any? %>
+        <div class="conversations-list">
+          <% @searched_conversations.each do |conversation| %>
+            <% friend = conversation.user1 == current_user ? conversation.user2 : conversation.user1 %>
+            <div class="card mb-2">
+              <div class="card-body p-2 d-flex align-items-center">
                 <!-- Avatar -->
                 <img src="<%= friend.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
-                     alt="Avatar" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
-                
+                     alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
                 <!-- Username -->
-                <h5 class="card-title"><%= friend.username %></h5>
-                
-                <!-- Link to Conversation -->
-                <%= link_to "Open Conversation", conversation_path(conversation), class: "btn btn-primary mt-3" %>
+                <div class="text-truncate flex-grow-1">
+                  <strong><%= friend.username %></strong>
+                </div>
+                <!-- Chat Icon -->
+                <%= link_to conversation_path(conversation), data: { turbo_frame: "showc" }, class: "btn btn-sm btn-primary me-2", title: "Chat" do %>
+                  <i class="bi bi-chat-dots"></i>
+                <% end %>
+                <!-- View Profile Icon -->
+                <%= link_to user_path(friend), class: "btn btn-sm btn-info me-2", title: "View Profile" do %>
+                  <i class="bi bi-person"></i>
+                <% end %>
+                <!-- Unread Messages -->
+                <% unread_count = conversation.user1 == current_user ? conversation.user1_unread_count : conversation.user2_unread_count %>
+                <% if unread_count.positive? %>
+                  <span class="badge bg-danger" title="Unread Messages"><%= unread_count %></span>
+                <% end %>
+                <!-- Undelivered Messages -->
+                <% undelivered_count = conversation.user1 == current_user ? conversation.user2_unread_count : conversation.user1_unread_count %>
+                <% if undelivered_count.positive? %>
+                  <span class="badge bg-primary" title="Undelivered Messages"><%= undelivered_count %></span>
+                <% end %>
               </div>
             </div>
-          </div>
-        <% end %>
-      </div>
-    <% else %>
-      <p class="text-muted text-center">No conversations found matching your search.</p>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-muted text-center">No conversations found matching your search.</p>
+      <% end %>
     <% end %>
-  </div>
-  <hr class="my-5">
-<% end %>
 
-<!-- All Conversations -->
-<h2 class="text-center mb-4">Your Conversations</h2>
-<div class="container">
-  <% if @conversations.any? %>
-    <div class="row">
+    <!-- All Conversations -->
+    <h5 class="text-center my-4">Your Conversations</h5>
+    <div class="conversations-list">
       <% @conversations.each do |conversation| %>
         <% friend = conversation.user1 == current_user ? conversation.user2 : conversation.user1 %>
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-body text-center">
-              <!-- Avatar -->
-              <img src="<%= friend.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
-                   alt="Avatar" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
-              
-              <!-- Username -->
-              <h5 class="card-title"><%= friend.username %></h5>
-              
-              <!-- Link to Conversation -->
-              <%= link_to "Open Conversation", conversation_path(conversation), data: { turbo_frame: :showc }, class: "btn btn-primary mt-3" %>
-            <%= link_to conversation_path(conversation), data: { turbo_frame: :show_or_new }, class: "btn btn-sm btn-primary me-2", title: "Chat" do %>  x <% end %>            
+        <div class="card mb-2">
+          <div class="card-body p-2 d-flex align-items-center">
+            <!-- Avatar -->
+            <img src="<%= friend.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
+                 alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+            <!-- Username -->
+            <div class="text-truncate flex-grow-1">
+              <strong><%= friend.username %></strong>
             </div>
+            <!-- Chat Icon -->
+            <%= link_to conversation_path(conversation), data: { turbo_frame: "showc" }, class: "btn btn-sm btn-primary me-2", title: "Chat" do %>
+              <i class="bi bi-chat-dots"></i>
+            <% end %>
+            <!-- View Profile Icon -->
+            <%= link_to user_path(friend), class: "btn btn-sm btn-info me-2", title: "View Profile" do %>
+              <i class="bi bi-person"></i>
+            <% end %>
+            <!-- Unread Messages -->
+            <% unread_count = conversation.user1 == current_user ? conversation.user1_unread_count : conversation.user2_unread_count %>
+            <% if unread_count.positive? %>
+              <span class="badge bg-danger" title="Unread Messages"><%= unread_count %></span>
+            <% end %>
+            <!-- Undelivered Messages -->
+            <% undelivered_count = conversation.user1 == current_user ? conversation.user2_unread_count : conversation.user1_unread_count %>
+            <% if undelivered_count.positive? %>
+              <span class="badge bg-primary" title="Undelivered Messages"><%= undelivered_count %></span>
+            <% end %>
           </div>
         </div>
       <% end %>
     </div>
-  <% else %>
-    <p class="text-muted text-center">You have no active conversations.</p>
-  <% end %>
-</div>
 
-<!-- Friends Without Active Conversations -->
-<h2 class="text-center my-4">Friends Without Conversations</h2>
-<div class="container">
-  <% if @friends_without_conversations.any? %>
-    <div class="row">
+    <!-- Friends Without Conversations -->
+    <h5 class="text-center my-4">Friends Without Conversations</h5>
+    <div class="conversations-list">
       <% @friends_without_conversations.each do |friend| %>
-        <div class="col-md-4 mb-4">
-          <div class="card">
-            <div class="card-body text-center">
-              <!-- Avatar -->
-              <img src="<%= friend.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
-                   alt="Avatar" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
-              
-              <!-- Username -->
-              <h5 class="card-title"><%= friend.username %></h5>
-              
-              <!-- New Message Button -->
-<%= link_to "New Message (Start New Conversation)", new_conversation_path(user_id: friend.id), data: { turbo_frame: :showc }, class: "btn btn-success mt-3" %>
-
+        <div class="card mb-2">
+          <div class="card-body p-2 d-flex align-items-center">
+            <!-- Avatar -->
+            <img src="<%= friend.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
+                 alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+            <!-- Username -->
+            <div class="text-truncate flex-grow-1">
+              <strong><%= friend.username %></strong>
             </div>
+            <!-- Chat Icon -->
+<%= link_to "New Message (Start New Conversation)", new_conversation_path(user_id: friend.id), data: { turbo_frame: :showc }, class: "btn btn-success mt-3" %>            
+            <%= button_to conversations_path(user_id: friend.id), method: :post, class: "btn btn-sm btn-success me-2", title: "Chat" do %>
+              <i class="bi bi-chat-dots"></i>
+            <% end %>
+            <!-- View Profile Icon -->
+            <%= link_to user_path(friend), class: "btn btn-sm btn-info", title: "View Profile" do %>
+              <i class="bi bi-person"></i>
+            <% end %>
           </div>
         </div>
       <% end %>
     </div>
-  <% else %>
-    <p class="text-muted text-center">All your friends already have active conversations.</p>
-  <% end %>
-</div>
+  </div>
 
-<%= turbo_frame_tag :showc %>
+  <!-- Right Section: Chat Window -->
+  <div class="chat-window flex-grow-1 bg-white">
+    <%= turbo_frame_tag :showc, class: "h-100 w-100" do %>
+      <p class="text-center text-muted mt-5">Select a conversation to start chatting.</p>
+    <% end %>
+  </div>
+</div>

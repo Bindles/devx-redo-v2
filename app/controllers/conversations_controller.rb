@@ -65,6 +65,7 @@ class ConversationsController < ApplicationController
     @message = @conversation.messages.build
   end
 
+  # * FIX ELSES IN IF MESSAGE.SAVE
   def create
     user = User.find(params[:conversation][:user_id])
     @conversation = Conversation.between(current_user, user) || Conversation.create(user1: current_user, user2: user)
