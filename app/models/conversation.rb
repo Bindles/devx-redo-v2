@@ -32,4 +32,9 @@ class Conversation < ApplicationRecord
   def mark_as_read
     reset_unread_count
   end
+
+  def self.between(user1, user2)
+    where("(user1_id = ? AND user2_id = ?) OR (user1_id = ? AND user2_id = ?)",
+          user1.id, user2.id, user2.id, user1.id).first
+  end
 end

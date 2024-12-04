@@ -1,0 +1,20 @@
+<%= turbo_frame_tag :showc do %>
+  <h1>Start a New Conversation with <%= @user.username %></h1>
+
+  <div class="container">
+  <%= form_with model: @conversation, url: conversations_path, local: true do |form| %>
+      <!-- Hidden field to pass the friend's user ID -->
+      <%= form.hidden_field :user_id, value: @user.id %>
+
+      <div class="mb-3">
+        <%= form.label :content, "Your Message", class: "form-label" %>
+        <%= form.text_area :content, class: "form-control", placeholder: "Type your first message here..." %>
+      </div>
+
+      <div class="d-grid gap-2">
+        <%= form.submit "Start Conversation", class: "btn btn-success" %>
+      </div>
+    <% end %>
+  </div>
+
+<% end %>

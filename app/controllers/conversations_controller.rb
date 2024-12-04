@@ -36,6 +36,11 @@ class ConversationsController < ApplicationController
         query: query, user_id: current_user.id
       )
     end
+
+    # Friends without conversations
+    all_friends = current_user.friends
+    active_friend_ids = @conversations.map { |c| [ c.user1_id, c.user2_id ] }.flatten.uniq
+    @friends_without_conversations = all_friends.where.not(id: active_friend_ids)
   end
 
   def show
@@ -48,16 +53,49 @@ class ConversationsController < ApplicationController
     Rails.logger.debug { @conversation.inspect } # Log data
 
     # This renders a partial to update the Turbo Frame
-    respond_to do |format|
-      format.html # For direct visits
-      format.turbo_stream { render partial: "conversations/conversation", locals: { conversation: @conversation } }
+    # respond_to do |format|
+    #   format.html # For direct visits
+    #   format.turbo_stream { render partial: "conversations/conversation", locals: { conversation: @conversation } }
+    # end
+  end
+
+  def new
+    @user = User.find(params[:user_id]) # Assumes the friend ID is passed as a parameter
+    @conversation = Conversation.new
+    @message = @conversation.messages.build
+  end
+
+  def create
+    user = User.find(params[:conversation][:user_id])
+    @conversation = Conversation.between(current_user, user) || Conversation.create(user1: current_user, user2: user)
+
+    # Create the initial message
+    message = @conversation.messages.new(content: params[:conversation][:content], sender: current_user)
+
+    if message.save
+      @messages = @conversation.messages.order(:created_at)
+      # Render the 'show' view inside the Turbo Frame
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(:showc, template: "conversations/show")
+        end
+        format.html { redirect_to conversation_path(@conversation), notice: "Conversation started with your message." }
+      end
+    else
+      flash[:alert] = "Could not start conversation. Ensure the message content is valid."
+      respond_to do |format|
+        format.turbo_stream do
+          render turbo_stream: turbo_stream.replace(:showc, partial: "conversations/new", locals: { conversation: @conversation, user: user })
+        end
+        format.html { redirect_to new_conversation_path(user_id: user.id) }
+      end
     end
   end
 
 
-  def create
-    user = User.find(params[:user_id])
-    conversation = Conversation.between(current_user, user) || Conversation.create(user1: current_user, user2: user)
-    redirect_to conversation_path(conversation)
-  end
+  # def create
+  #   user = User.find(params[:user_id])
+  #   conversation = Conversation.between(current_user, user) || Conversation.create(user1: current_user, user2: user)
+  #   redirect_to conversation_path(conversation)
+  # end
 end

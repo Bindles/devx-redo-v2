@@ -1,12 +1,16 @@
-<h1>Chat with <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %></h1>
+<%= turbo_frame_tag :showc do %>
+  <h1>Chat with <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %></h1>
 
-<%= turbo_stream_from @conversation %>
+  <%= turbo_stream_from @conversation %>
 
-<div id="messages">
-  <%= render @messages %>
-</div>
+  <div id="messages">
+    <% if @messages %>
+      <%= render @messages %>
+    <% end %>
+  </div>
 
-<%= form_with model: [@conversation, Message.new], local: false do |form| %>
-  <%= form.text_area :content, placeholder: "Type a message..." %>
-  <%= form.submit "Send" %>
+  <%= form_with model: [@conversation, Message.new], local: false do |form| %>
+    <%= form.text_area :content, placeholder: "Type a message..." %>
+    <%= form.submit "Send" %>
+  <% end %>
 <% end %>

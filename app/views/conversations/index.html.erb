@@ -1,4 +1,3 @@
-<%# app/views/conversations/index.html.erb %>
 <h1 class="text-center mb-4">Conversations</h1>
 
 <!-- Search Form -->
@@ -28,14 +27,6 @@
                 
                 <!-- Username -->
                 <h5 class="card-title"><%= friend.username %></h5>
-
-              <!-- Unread Message Indicator -->
-              <%# unread_count = conversation.messages.where(read: false, recipient: current_user).count %>
-              <%# if unread_count.positive? %>
-                <span class="badge bg-danger">Unread: <%#= unread_count %></span>
-              <%# else %>
-                <span class="badge bg-success">All Read</span>
-              <%# end %>                
                 
                 <!-- Link to Conversation -->
                 <%= link_to "Open Conversation", conversation_path(conversation), class: "btn btn-primary mt-3" %>
@@ -67,33 +58,10 @@
               
               <!-- Username -->
               <h5 class="card-title"><%= friend.username %></h5>
-
-              <!-- Unread Message Indicator -->
-              <%# unread_count = conversation.unread_count %>
-              <%# if unread_count.positive? %>
-                <span class="badge bg-danger">Unread: <%#= unread_count %></span>
-              <%# else %>
-                <span class="badge bg-success">All Read</span>
-              <%# end %>
-
-              <!-- Unread Message Indicator -->
-              <%# if conversation.unread_count.positive? %>
-                <span class="badge bg-danger">Unread: <%#= conversation.unread_count %></span>
-              <%# else %>
-                <span class="badge bg-success">All Read</span>
-              <%# end %>
-
-              <!-- Unread Message Indicator -->
-              <% unread_count = conversation.user1 == current_user ? conversation.user1_unread_count : conversation.user2_unread_count %>
-              <%= unread_count.inspect %>
-              <% if unread_count.positive? %>
-                <span class="badge bg-danger">Unread: <%= unread_count.inspect %></span>
-              <% else %>
-                <span class="badge bg-success">All Read</span>
-              <% end %>                                        
               
               <!-- Link to Conversation -->
-              <%= link_to "Open Conversation", conversation_path(conversation), class: "btn btn-primary mt-3" %>
+              <%= link_to "Open Conversation", conversation_path(conversation), data: { turbo_frame: :showc }, class: "btn btn-primary mt-3" %>
+            <%= link_to conversation_path(conversation), data: { turbo_frame: :show_or_new }, class: "btn btn-sm btn-primary me-2", title: "Chat" do %>  x <% end %>            
             </div>
           </div>
         </div>
@@ -103,3 +71,34 @@
     <p class="text-muted text-center">You have no active conversations.</p>
   <% end %>
 </div>
+
+<!-- Friends Without Active Conversations -->
+<h2 class="text-center my-4">Friends Without Conversations</h2>
+<div class="container">
+  <% if @friends_without_conversations.any? %>
+    <div class="row">
+      <% @friends_without_conversations.each do |friend| %>
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            <div class="card-body text-center">
+              <!-- Avatar -->
+              <img src="<%= friend.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
+                   alt="Avatar" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+              
+              <!-- Username -->
+              <h5 class="card-title"><%= friend.username %></h5>
+              
+              <!-- New Message Button -->
+<%= link_to "New Message (Start New Conversation)", new_conversation_path(user_id: friend.id), data: { turbo_frame: :showc }, class: "btn btn-success mt-3" %>
+
+            </div>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <p class="text-muted text-center">All your friends already have active conversations.</p>
+  <% end %>
+</div>
+
+<%= turbo_frame_tag :showc %>
