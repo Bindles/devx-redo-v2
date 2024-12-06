@@ -1,0 +1,156 @@
+<%= turbo_frame_tag :showc do %>
+  <h1>Chat with <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %></h1>
+
+  <%= turbo_stream_from @conversation %>
+
+  <div id="messages">
+    <% if @messages %>
+      <%= render @messages %>
+    <% end %>
+  </div>
+
+  <%= form_with model: [@conversation, Message.new], local: false do |form| %>
+    <%= form.text_area :content, placeholder: "Type a message..." %>
+    <%= form.submit "Send" %>
+  <% end %>
+<% end %>
+
+
+
+
+
+<%# xx %>
+<div id="message_<%= message.id %>" class="message">
+
+  <strong><%= message.sender.username %>:</strong> <%= message.content %>
+</div>
+
+
+
+
+<%# xx %>
+<%= turbo_frame_tag :showc, class: "d-flex flex-column h-100" do %>
+  <!-- Chat Card -->
+  <div class="card h-100 shadow-sm rounded-3">
+    <!-- Chat Header -->
+    <div class="card-header d-flex justify-content-between align-items-center p-3" style="border-top: 4px solid #6c757d;">
+      <h5 class="mb-0">Chat with <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %></h5>
+      <div class="d-flex flex-row align-items-center">
+        <span class="badge bg-secondary me-3"><%= @messages.size %></span>
+        <i class="fas fa-minus me-3 text-muted fa-xs"></i>
+        <i class="fas fa-comments me-3 text-muted fa-xs"></i>
+        <i class="fas fa-times text-muted fa-xs"></i>
+      </div>
+    </div>
+
+
+  <%= turbo_stream_from @conversation %>
+
+  <div id="messages">
+    <% if @messages %>
+      <%= render @messages %>
+    <% end %>
+  </div>
+
+
+    <!-- Chat Input -->
+    <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+      <%= form_with model: [@conversation, Message.new], local: false, id: "new-message-form" do |form| %>
+        <div class="input-group mb-0">
+          <%= form.text_area :content, placeholder: "Type a message", class: "form-control", rows: 1 %>
+          <button class="btn btn-secondary" type="submit" style="padding-top: .55rem;">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>
+
+
+
+<%# xx %>
+<%#styled latest that works cable%>
+<div id="message_<%= message.id %>" class="message">
+            <!-- Outgoing Message -->
+            <div class="d-flex flex-column align-items-end">
+              <div class="d-flex align-items-center">
+                <div>
+                  <p class="small p-2 mb-1 text-white rounded-3 bg-secondary text-end" style="max-width: 300px;"><%= message.content %></p>
+                  <small class="text-muted d-block mt-1 text-end" style="font-size: 0.8rem;"><%= time_ago_in_words(message.created_at) %> ago</small>
+                </div>
+                <div class="ms-2 text-center">
+                  <p class="small text-muted mb-1" style="font-size: 0.9rem; line-height: 1;"><%= message.sender.username %></p>
+                  <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                       alt="Avatar" class="rounded-circle" style="width: 45px; height: 45px;">
+                </div>
+              </div>
+  <strong><%= message.sender.username %>:</strong> <%= message.content %>
+</div>
+
+
+
+
+
+
+
+
+<%#styled latest that works cable%>
+<div id="message_<%= message.id %>" class="message">
+            <!-- Outgoing Message -->
+            <div class="d-flex flex-column align-items-end">
+              <div class="d-flex align-items-center">
+                <div>
+                  <p class="small p-2 mb-1 text-white rounded-3 bg-secondary text-end" style="max-width: 300px;"><%= message.content %></p>
+                  <small class="text-muted d-block mt-1 text-end" style="font-size: 0.8rem;"><%= time_ago_in_words(message.created_at) %> ago</small>
+                </div>
+                <div class="ms-2 text-center">
+                  <p class="small text-muted mb-1" style="font-size: 0.9rem; line-height: 1;"><%= message.sender.username %></p>
+                  <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                       alt="Avatar" class="rounded-circle" style="width: 45px; height: 45px;">
+                </div>
+              </div>
+  <strong><%= message.sender.username %>:</strong> <%= message.content %>
+</div>
+
+
+
+
+
+
+OTHER GPT:
+<%= turbo_frame_tag :showc do %>
+  <div class="container">
+    <!-- Chat Header -->
+    <div class="row bg-light py-2 border-bottom">
+      <div class="col d-flex align-items-center">
+        <%= image_tag(@conversation.user1 == current_user ? @conversation.user2.profile.avatar_url : @conversation.user1.profile.avatar_url, class: "rounded-circle me-2", alt: "Avatar", width: 40, height: 40) %>
+        <h1 class="fs-5 mb-0">
+          Chat with <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %>
+        </h1>
+      </div>
+    </div>
+
+    <!-- Turbo Stream for Real-Time Updates -->
+    <%= turbo_stream_from @conversation %>
+
+    <!-- Messages Container -->
+    <div id="messages" class="row mt-3 overflow-auto" style="max-height: 60vh;">
+      <div class="col">
+        <% if @messages %>
+          <%= render @messages %>
+        <% end %>
+      </div>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="row border-top mt-3 pt-3">
+      <div class="col">
+        <%= form_with model: [@conversation, Message.new], local: false, class: "d-flex gap-2" do |form| %>
+          <%= form.text_area :content, placeholder: "Type a message...", class: "form-control", rows: 1 %>
+          <%= form.submit "Send", class: "btn btn-primary" %>
+        <% end %>
+      </div>
+    </div>
+  </div>
+<% end %>

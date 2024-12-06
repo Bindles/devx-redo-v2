@@ -1,0 +1,21 @@
+<%# _preview.html.erb %>
+<%= params[:xxx].inspect %>
+<ul class="list-group mb-3">
+  <% if params[:xxx] = 'all'%>  
+  <% comments.each do |comment| %>
+    <li class="list-group-item">
+      <strong><%= comment.user.email %>:</strong>
+      <p><%= comment.body %></p>
+    </li>
+  <% else %>
+      <% comments.last(1).each do |comment| %>
+      <p><strong><%= comment.user.email %>:</strong> <%= comment.content %></p>
+    <% end %>
+  <% end %>
+</ul>
+zz
+<% if show_all %>
+  <%= button_to "Show Less", post_path(@post), method: :get, remote: true, class: "btn btn-secondary" %>
+<% else %>
+  <%= button_to "Show All", post_path(@post, show_all: true), method: :get, remote: true, class: "btn btn-primary" %>
+<% end %>

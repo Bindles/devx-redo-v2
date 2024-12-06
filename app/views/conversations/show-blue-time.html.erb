@@ -1,0 +1,38 @@
+<%= turbo_frame_tag :showc, class: "d-flex flex-column h-100 bg-light shadow-sm rounded" do %>
+  <!-- Chat Header -->
+  <div class="chat-header d-flex align-items-center px-3 py-2 bg-primary text-white border-bottom">
+    <img src="<%= @conversation.user1 == current_user ? @conversation.user2.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' : @conversation.user1.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+         alt="Avatar" class="rounded-circle me-2" style="width: 40px; height: 40px; object-fit: cover;">
+    <h6 class="mb-0">
+      <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %>
+    </h6>
+  </div>
+
+  <%= turbo_stream_from @conversation %>
+  
+  <!-- Messages Section -->
+  <div class="chat-messages flex-grow-1 p-3" style="overflow-y: auto; max-height: 450px; background-color: #f8f9fa;">
+    <% @messages.each do |message| %>
+      <div class="d-flex mb-2 <%= message.sender == current_user ? 'justify-content-end' : 'justify-content-start' %>">
+        <!-- Avatar -->
+        <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
+             alt="Avatar" class="rounded-circle me-2" style="width: 35px; height: 35px; object-fit: cover;">
+        <!-- Message Bubble -->
+        <div class="message-bubble <%= message.sender == current_user ? 'bg-primary text-white' : 'bg-light' %> p-2 rounded-3" style="max-width: 75%;">
+          <span><%= message.content %></span>
+          <small class="text-muted d-block mt-1" style="font-size: 0.8rem;"><%= time_ago_in_words(message.created_at) %> ago</small>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <!-- Message Input Section -->
+  <div class="chat-input p-2 border-top bg-white">
+    <%= form_with model: [@conversation, Message.new], local: false, class: "d-flex align-items-center" do |form| %>
+      <%= form.text_area :content, placeholder: "Type a message...", class: "form-control me-2", rows: 1 %>
+      <button class="btn btn-primary" type="submit" style="width: 40px; height: 40px;">
+        <i class="bi bi-send"></i>
+      </button>
+    <% end %>
+  </div>
+<% end %>

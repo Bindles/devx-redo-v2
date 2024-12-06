@@ -26,8 +26,14 @@ Rails.application.routes.draw do
 
 
   resources :posts do
-    resources :comments, only: [ :create ] # , defaults: { commentable: 'Post' }
+    resources :comments, only: [ :index, :create ] # , defaults: { commentable: 'Post' }
   end
+
+  # resources :posts do
+  #   member do
+  #     get :comments
+  #   end
+  # end
 
   get  "ci", to: "conversations#index_all"
   root "posts#index"

@@ -1,0 +1,26 @@
+<%# _preview.html.erb %>
+<%= params[:xxx] %>
+<ul class="list-group mb-3">
+  <% if params[:xxx] == '1' %>
+
+    <% comments.last(2).each do |comment| %>
+      <li class="list-group-item">
+        <strong><%= comment.user.email %>:</strong>
+        <p><%= comment.content %></p>
+      </li>
+    <% end %>
+  <% else %>
+    <% comments.last(1).each do |comment| %>
+      <li class="list-group-item">
+        <strong><%= comment.user.email %>:</strong>
+        <p><%= comment.content %></p>
+      </li>
+    <% end %>
+  <% end %>
+</ul>
+
+<% if params[:xxx] == '1' %>
+  <%= button_to "Show Less", post_path(@post), method: :get, remote: true, class: "btn btn-secondary" %>
+<% else %>
+  <%= button_to "Show All", post_path(@post, show_all: true), method: :get, remote: true, class: "btn btn-primary" %>
+<% end %>

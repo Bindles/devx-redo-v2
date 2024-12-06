@@ -1,0 +1,19 @@
+<%# app/views/posts/_list.html.erb %>
+<%= params[:xxx].inspect %>
+<div id="post-comments-<%= @post.id %>">
+  <% if params[:xxx] = 'all'%>
+    <% comments.each do |comment| %>
+      <p><strong><%= comment.user.email %>:</strong> <%= comment.content %></p>
+    <% end %>
+</div>
+  <% else %>
+      <% comments.last(1).each do |comment| %>
+      <p><strong><%= comment.user.email %>:</strong> <%= comment.content %></p>
+    <% end %>
+  <% end %>
+
+<% unless all_loaded %>
+  <%= button_to "Show All Comments", comments_post_path(@post, limit: nil), method: :get, remote: true, class: "btn btn-primary" %>
+<% else %>
+  <%= button_to "Hide Commentsx", comments_post_path(@post, limit: 3), method: :get, remote: true, class: "btn btn-secondary" %>
+<% end %>

@@ -1,0 +1,53 @@
+<%= turbo_frame_tag :showc, class: "d-flex flex-column h-100" do %>
+  <!-- Chat Card -->
+  <div class="card h-100 shadow-sm rounded-3">
+    <!-- Chat Header -->
+    <div class="card-header d-flex justify-content-between align-items-center p-3" style="border-top: 4px solid #6c757d;">
+      <h5 class="mb-0">Chat with <%= @conversation.user1 == current_user ? @conversation.user2.username : @conversation.user1.username %></h5>
+      <div class="d-flex flex-row align-items-center">
+        <span class="badge bg-secondary me-3"><%= @messages.size %></span>
+        <i class="fas fa-minus me-3 text-muted fa-xs"></i>
+        <i class="fas fa-comments me-3 text-muted fa-xs"></i>
+        <i class="fas fa-times text-muted fa-xs"></i>
+      </div>
+    </div>
+
+    <!-- Chat Messages Section -->
+    <div class="card-body custom-scrollbar" style="position: relative; height: 400px; overflow-y: auto;" id="messages-container">
+      <% @messages.each do |message| %>
+        <!-- Message Block -->
+        <div class="d-flex flex-row <%= message.sender == current_user ? 'justify-content-end' : 'justify-content-start' %> mb-4">
+          <% if message.sender == current_user %>
+            <!-- Outgoing Message -->
+            <div>
+              <p class="small p-2 me-3 mb-1 text-white rounded-3 bg-secondary"><%= message.content %></p>
+              <small class="text-muted d-block mt-1" style="font-size: 0.8rem;"><%= time_ago_in_words(message.created_at) %> ago</small>
+            </div>
+            <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                 alt="Avatar" class="rounded-circle" style="width: 45px; height: 100%;">
+          <% else %>
+            <!-- Incoming Message -->
+            <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                 alt="Avatar" class="rounded-circle me-2" style="width: 45px; height: 100%;">
+            <div>
+              <p class="small p-2 ms-3 mb-1 rounded-3 bg-light"><%= message.content %></p>
+              <small class="text-muted d-block mt-1" style="font-size: 0.8rem;"><%= time_ago_in_words(message.created_at) %> ago</small>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Chat Input -->
+    <div class="card-footer text-muted d-flex justify-content-start align-items-center p-3">
+      <%= form_with model: [@conversation, Message.new], local: false, id: "new-message-form" do |form| %>
+        <div class="input-group mb-0">
+          <%= form.text_area :content, placeholder: "Type a message", class: "form-control", rows: 1 %>
+          <button class="btn btn-secondary" type="submit" style="padding-top: .55rem;">
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% end %>

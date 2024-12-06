@@ -1,0 +1,14 @@
+<%# app/views/comments/_list.html.erb %>
+<ul class="list-unstyled">
+  <% comments.each do |comment| %>
+    <li>
+      <strong><%= comment.user.username %>:</strong> <%= comment.content %>
+    </li>
+  <% end %>
+</ul>
+
+<% if !all_loaded %>
+  <button data-action="comments#loadMore" class="btn btn-primary btn-sm mt-2">Show All Comments</button>
+<% else %>
+  <button data-action="comments#hideAll" class="btn btn-secondary btn-sm mt-2">Hide Comments</button>
+<% end %>

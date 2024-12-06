@@ -1,0 +1,37 @@
+<%#styled latest that doenst works cable%>
+<div id="message_<%= message.id %>" class="message">
+
+        <!-- Message Block -->
+        <div class="d-flex <%= message.sender == current_user ? 'justify-content-end' : 'justify-content-start' %> mb-4">
+          <% if message.sender == current_user %>
+            <!-- Outgoing Message -->
+            <div class="d-flex flex-column align-items-end">
+              <div class="d-flex align-items-center">
+                <div>
+                  <p class="small p-2 mb-1 text-white rounded-3 bg-secondary text-end" style="max-width: 300px;"><%= message.content %></p>
+                  <small class="text-muted d-block mt-1 text-end" style="font-size: 0.8rem;"><%= time_ago_in_words(message.created_at) %> ago</small>
+                </div>
+                <div class="ms-2 text-center">
+                  <p class="small text-muted mb-1" style="font-size: 0.9rem; line-height: 1;"><%= message.sender.username %></p>
+                  <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                       alt="Avatar" class="rounded-circle" style="width: 45px; height: 45px;">
+                </div>
+              </div>
+            </div>
+          <% else %>
+            <!-- Incoming Message -->
+            <div class="d-flex align-items-center">
+              <div class="me-2 text-center">
+                <p class="small text-muted mb-1" style="font-size: 0.9rem; line-height: 1;"><%= message.sender.username %></p>
+                <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+                     alt="Avatar" class="rounded-circle" style="width: 45px; height: 45px;">
+              </div>
+              <div>
+                <p class="small p-2 mb-1 rounded-3 bg-light" style="max-width: 300px;"><%= message.content %></p>
+                <small class="text-muted d-block mt-1" style="font-size: 0.8rem;"><%= time_ago_in_words(message.created_at) %> ago</small>
+              </div>
+            </div>
+          <% end %>
+        </div>
+
+</div>
