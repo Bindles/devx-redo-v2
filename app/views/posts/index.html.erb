@@ -1,32 +1,16 @@
-<div class="container">
+<p style="color: green"><%= notice %></p>
+
+<% content_for :title, "Posts" %>
+
+<h1>Posts</h1>
+
+<div id="posts">
   <% @posts.each do |post| %>
-    <div class="card mb-3">
-      <div class="card-body">
-        <h5 class="card-title"><%= post.title %></h5>
-        <p class="card-text"><%= post.body %></p>
-
-        <!-- Recent Comments -->
-        <div class="comments-section">
-          <h6>Comments:</h6>
-          <ul class="list-unstyled mb-2" id="comments-list-<%= post.id %>">
-            <% post.recent_comments.each do |comment| %>
-              <li><strong><%= comment.user.username %>:</strong> <%= comment.content %></li>
-            <% end %>
-          </ul>
-        </div>
-
-        <!-- Toggle Buttons -->
-        <div>
-          <button class="btn btn-primary btn-sm" id="show-btn-<%= post.id %>" 
-                  onclick="fetchComments(<%= post.id %>)">
-            Show Comments
-          </button>
-          <button class="btn btn-secondary btn-sm d-none" id="hide-btn-<%= post.id %>" 
-                  onclick="hideComments(<%= post.id %>)">
-            Hide Comments
-          </button>
-        </div>
-      </div>
-    </div>
+    <%= render post %>
+    <p>
+      <%= link_to "Show this post", post %>
+    </p>
   <% end %>
 </div>
+
+<%= link_to "New post", new_post_path %>

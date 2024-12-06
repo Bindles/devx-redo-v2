@@ -1,0 +1,25 @@
+<%= turbo_frame_tag :showc do %>
+  <div class="chat-header">
+    <div class="chat-partner">
+      <%= image_tag(@conversation.user1 == current_user ? @conversation.user2.profile.avatar_url : @conversation.user1.profile.avatar_url, class: "avatar") %>
+      <h1 class="chat-username">
+        Chat with <%= @conversation.user1 == current_user ? @conversation.user2.profile.username : @conversation.user1.profile.username %>
+      </h1>
+    </div>
+  </div>
+
+  <%= turbo_stream_from @conversation %>
+
+  <div id="messages" class="messages-container">
+    <% if @messages %>
+      <%= render @messages %>
+    <% end %>
+  </div>
+
+  <div class="chat-input">
+    <%= form_with model: [@conversation, Message.new], local: false, class: "message-form" do |form| %>
+      <%= form.text_area :content, placeholder: "Type a message...", class: "message-input" %>
+      <%= form.submit "Send", class: "message-submit" %>
+    <% end %>
+  </div>
+<% end %>

@@ -1,0 +1,29 @@
+<%# show.html.erb %>
+<% if params[:show] = 'cool' %>
+  SA
+  <%= @comments.inspect %>
+<% end %>
+params_show__all: <%= params.inspect %> <%= params[:show_all].inspect %>
+<div class="container mt-5">
+  <div class="card">
+    <div class="card-body">
+      <h1 class="card-title"><%= @post.title %></h1>
+      <p class="card-text"><%= @post.body %></p>
+      <p class="text-muted">Posted by: <%= @post.user.email %> (ID: <%= @post.user.id %>)</p>
+    </div>
+  </div>
+
+  <div class="mt-4">
+    <h2>Commentsx</h2>
+<%= params[:xxx].inspect %>    
+    <%= turbo_stream_from @post %>
+
+    <div id="comments-section">
+      <%= turbo_frame_tag "comments" do %>
+        <%= render partial: "comments/preview", locals: { comments: @post.comments, show_all: false } %>
+      <% end %>
+    </div>
+
+    <%= render "comments/new", post: @post %>
+  </div>
+</div>

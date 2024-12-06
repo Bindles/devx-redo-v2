@@ -1,21 +1,21 @@
 import { Controller } from "@hotwired/stimulus";
 
 export default class extends Controller {
-  static values = { postId: Number };
+  static targets = ["preview", "all", "showButton", "hideButton"];
 
-  loadMore() {
-    fetch(`/posts/${this.postIdValue}/comments`)
-      .then(response => response.text())
-      .then(html => {
-        this.element.innerHTML = html;
-      });
+  showAll() {
+    // Show all comments and toggle button visibility
+    this.previewTarget.style.display = "none";
+    this.allTarget.style.display = "block";
+    this.showButtonTarget.style.display = "none";
+    this.hideButtonTarget.style.display = "inline-block";
   }
 
   hideAll() {
-    fetch(`/posts/${this.postIdValue}/comments?limit=3`)
-      .then(response => response.text())
-      .then(html => {
-        this.element.innerHTML = html;
-      });
+    // Show the preview and hide the rest of the comments
+    this.previewTarget.style.display = "block";
+    this.allTarget.style.display = "none";
+    this.showButtonTarget.style.display = "inline-block";
+    this.hideButtonTarget.style.display = "none";
   }
 }

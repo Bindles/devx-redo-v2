@@ -5,3 +5,11 @@
   <small>Posted by: <%= post.user.email %></small>
   <%= post.comments.inspect %>
 </div>
+
+<h2>Comments</h2>
+<%= turbo_stream_from post %>
+<div id="comments">
+  <%= render post.comments %>
+</div>
+
+<%= render 'comments/new', post: @post %>

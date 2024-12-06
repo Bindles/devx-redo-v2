@@ -149,22 +149,31 @@
 
 <script>
 document.addEventListener("turbo:load", () => {
-  const messagesContainer = document.getElementById("messages-container");
+  const messages = document.getElementById("messages");
 
-  // Scroll to bottom initially
-  if (messagesContainer) {
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  // Function to scroll to the bottom
+  const scrollToBottom = () => {
+    messages.scrollTop = messages.scrollHeight;
+  };
+
+  // Scroll to the bottom on page load
+  if (messages) {
+    scrollToBottom();
   }
 
-  // Scroll to bottom on form submission
-  const form = document.getElementById("new-message-form");
-  if (form) {
-    form.addEventListener("submit", () => {
-      setTimeout(() => {
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      }, 100);
-    });
+  // Listen for Turbo Stream updates to ensure scrolling happens last
+  document.addEventListener("turbo:frame-render", (event) => {
+    if (event.target.id === "messages") {
+      scrollToBottom();
+    }
+  });
+
+  // Use MutationObserver to handle manual additions outside of Turbo Stream
+  const observer = new MutationObserver(() => scrollToBottom());
+  if (messages) {
+    observer.observe(messages, { childList: true });
   }
 });
+
 
 </script>
