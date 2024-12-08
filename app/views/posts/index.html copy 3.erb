@@ -5,7 +5,7 @@
       <p class="card-text"><%= post.body %></p>
 
       <!-- Comments Turbo Frame -->
-      <%= turbo_frame_tag "comments_for_#{post.id}" do %>
+      <%= turbo_frame_tag "comments_for_post_#{post.id}" do %>
         <%= render post.comments %> <!-- Only render the last 3 comments initially -->
       <% end %>
 

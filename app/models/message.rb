@@ -14,7 +14,40 @@ class Message < ApplicationRecord
   # Increment unread count after a new message is created
   after_create :increment_unread_count_for_recipient
 
+  after_create_commit :broadcast_unread_message_count
+
+  after_create :broadcast_unread_count_to_conversation
+
   private
+
+  def broadcast_unread_count_to_conversation
+    # Determine the recipient of the message
+    recipient = conversation.user1 == sender ? conversation.user2 : conversation.user1
+
+    # Broadcast the updated unread count for the conversation
+    Turbo::StreamsChannel.broadcast_update_to(
+      "user_conversations_#{recipient.id}",
+      target: "unread_messages_#{conversation.id}",
+      partial: "conversations/unread_message_count",
+      locals: { conversation: conversation, current_user: recipient }
+    )
+  end
+
+  def broadcast_unread_message_count
+    recipient = conversation.user1 == sender ? conversation.user2 : conversation.user1
+    Turbo::StreamsChannel.broadcast_update_to(
+      "navbar_#{recipient.id}", # Stream name specific to the recipient
+      target: "unread_messages_count", # The ID of the target element in the navbar
+      partial: "shared/unread_messages_count", # Partial to render
+      locals: { unread_count: recipient.unread_messages_count } # Pass updated count
+    )
+    Turbo::StreamsChannel.broadcast_update_to(
+      "x_#{recipient.id}", # Stream name specific to the recipient
+      target: "xunread_messages_count", # The ID of the target element in the navbar
+      partial: "shared/unread_messages_count", # Partial to render
+      locals: { unread_count: recipient.unread_messages_count } # Pass updated count
+    )
+  end
 
 
 # message.rb

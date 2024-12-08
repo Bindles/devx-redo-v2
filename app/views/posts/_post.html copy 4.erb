@@ -1,0 +1,15 @@
+<%# app/views/posts/_post.html.erb %>
+<div class="post">
+  <h3><%= post.title %></h3>
+  <p><%= post.body %></p>
+  <small>Posted by: <%= post.user.email %></small>
+  <%= post.comments.inspect %>
+</div>
+
+<h2>Comments</h2>
+<%= turbo_stream_from post %>
+<div id="comments">
+  <%= render post.comments %>
+</div>
+
+<%= render 'comments/new', post: Post.find(post.id) %>

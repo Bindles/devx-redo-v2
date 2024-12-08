@@ -1,0 +1,17 @@
+<h1><%= @post.title %></h1>
+<p><%= @post.body %></p>
+
+<h2>Comments</h2>
+<%= turbo_frame_tag :comments do %>
+  <!-- Display the comments -->
+  <div id="comments">
+    <%= render @comments %> <!-- Render the paginated comments -->
+  </div>
+
+  <!-- Paginate the comments -->
+  <div id="comments-pagination">
+    <%== pagy_nav(@pagy) %> <!-- Show pagination links if there are multiple pages -->
+  </div>
+<% end %>
+
+<%= render 'comments/new', post: @post %>

@@ -1,0 +1,44 @@
+<style>
+button[data-action="click->comments#showAll"] {
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[data-action="click->comments#showAll"]:hover {
+  background-color: #0056b3;
+}
+
+</style>
+
+
+
+<h1><%= @post.title %></h1>
+<p><%= @post.body %></p>
+
+<h2>Comments</h2>
+<%= turbo_stream_from @post %>
+
+<div id="comments" data-controller="comments">
+  <%# Render the first 3 comments %>
+  <div data-comments-target="preview">
+    <%= render @post.comments.last(3) %>
+  </div>
+
+  <%# Render the rest of the comments hidden initially %>
+  <div data-comments-target="all" style="display: none;">
+    <%= render @post.comments.offset(3) %>
+  </div>
+
+  <%# Buttons to toggle comments %>
+  <% if @post.comments.size > 3 %>
+    <button data-action="click->comments#showAll" data-comments-target="showButton">Show All Comments</button>
+    <button data-action="click->comments#hideAll" data-comments-target="hideButton" style="display: none;">Hide Comments</button>
+  <% end %>
+</div>
+
+<%= render 'comments/new', post: @post %>

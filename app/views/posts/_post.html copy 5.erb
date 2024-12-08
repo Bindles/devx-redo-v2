@@ -1,0 +1,9 @@
+<%# app/views/posts/_post.html.erb %>
+<div class="post">
+  <h3><%= post.title %></h3>
+  <p><%= post.body %></p>
+  <small>Posted by: <%= post.user.email %></small>
+  <%= post.comments.inspect %>
+</div>
+
+

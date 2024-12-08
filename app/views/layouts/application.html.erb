@@ -52,6 +52,12 @@
           </ul>
           <ul class="navbar-nav">
             <% if user_signed_in? %>
+    <li class="nav-item">
+      <%= turbo_stream_from "navbar_#{current_user.id}" %>
+      <span id="unread_messages_count">
+        <%= render "shared/unread_messages_count", unread_count: current_user.unread_messages_count %>
+      </span> 
+      </li>       
               <li class="nav-item">
                 <span class="navbar-text me-3">
                   <%= current_user.email %> (<%= current_user.username %>)

@@ -1,0 +1,4 @@
+<%# app/views/users/_unread_messages_count.html.erb %>
+<span class="badge bg-info">
+  <%= Conversation.where(user1: current_user).sum(:user1_unread_count) + Conversation.where(user2: current_user).sum(:user2_unread_count) %>
+</span>

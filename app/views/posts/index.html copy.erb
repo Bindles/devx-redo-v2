@@ -1,0 +1,22 @@
+<%# app/views/posts/index.html.erb %>
+<div id="posts">
+  <% @posts.each do |post| %>
+        <h5 class="card-title"><%= post.title %></h5>
+        <p class="card-text"><%= post.body %></p> 
+      
+    <%= turbo_frame_tag "xxx_#{post.id}" do %>
+      <%= render post.comments.last(3) %>  
+
+    <% end %>
+            <!-- Chat Icon -->
+            <%= link_to post_path(post), data: { turbo_frame: "xxx_#{post.id}" }, class: "btn btn-sm btn-primary me-2", title: "Chat" do %>
+              <i class="bi bi-chat-dots"></i>
+            <% end %>        
+  <% end %>
+</div>
+
+
+
+    
+    
+

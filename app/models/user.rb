@@ -28,6 +28,11 @@ class User < ApplicationRecord
     conversations_as_user1 + conversations_as_user2
   end
 
+  # Method to calculate unread messages count
+  def unread_messages_count
+    conversations_as_user1.sum(:user1_unread_count) +
+    conversations_as_user2.sum(:user2_unread_count)
+  end
 
 
   private

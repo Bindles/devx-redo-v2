@@ -97,10 +97,17 @@
               <i class="bi bi-person"></i>
             <% end %>
             <!-- Unread Messages -->
-            <% unread_count = conversation.user1 == current_user ? conversation.user1_unread_count : conversation.user2_unread_count %>
-            <% if unread_count.positive? %>
-              <span class="badge bg-danger" title="Unread Messages"><%= unread_count %></span>
-            <% end %>
+            <%= turbo_stream_from "user_conversations_#{current_user.id}" %>
+
+            <div id="unread_messages_<%= conversation.id %>">
+              <% unread_count = conversation.user1 == current_user ? conversation.user1_unread_count : conversation.user2_unread_count %>
+              <% if unread_count.positive? %>
+                <span class="badge bg-danger" title="Unread Messages"><%= unread_count %></span>
+              <% else %>
+                <span class="badge bg-danger" style="display: none;" title="Unread Messages"></span>
+              <% end %>
+            </div>
+
             <!-- Undelivered Messages -->
             <% undelivered_count = conversation.user1 == current_user ? conversation.user2_unread_count : conversation.user1_unread_count %>
             <% if undelivered_count.positive? %>
