@@ -1,0 +1,8 @@
+<!-- app/views/conversations/_undelivered_message_count.html.erb -->
+
+<% undelivered_count = conversation.user1 == current_user ? conversation.user1_unread_count : conversation.user2_unread_count %>
+<% if undelivered_count.positive? %>
+  <span class="badge bg-warning" title="Undelivered Messages"><%= undelivered_count %></span>
+<% else %>
+  <span class="badge bg-warning" style="display: none;" title="Undelivered Messages"></span>
+<% end %>

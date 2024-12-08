@@ -6,7 +6,7 @@ class Message < ApplicationRecord
   validates :content, presence: true
 
   # Turbo Streams for real-time updates
-  broadcasts_to :conversation
+  broadcasts_to :conversation # <= THIS MAGIC LINE TAKES CARE OF SHOW
 
   # after_create :update_conversation_unread_count
   # after_create :increment_unread_count
@@ -17,6 +17,11 @@ class Message < ApplicationRecord
   after_create_commit :broadcast_unread_message_count
 
   after_create :broadcast_unread_count_to_conversation
+
+  after_create_commit do
+    broadcast_update_to :posts_list, target: "posts_count", html: Conversation.find(conversation_id).user2_unread_count
+    #   broadcast_append_to :posts_list, target: "posts", partial: "posts/post", locals: { post: self }
+  end
 
   private
 
