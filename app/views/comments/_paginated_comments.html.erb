@@ -1,0 +1,6 @@
+<%# app/views/comments/_paginated_comments.html.erb %>
+<div id="<%= dom_id(post, :comments_list) %>">
+  <%= render comments %>
+</div>
+
+<%== pagy_nav(pagy) %>

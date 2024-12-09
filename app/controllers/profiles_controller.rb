@@ -1,6 +1,11 @@
 class ProfilesController < ApplicationController
   before_action :set_user_and_profile, only: [ :show, :edit, :update ]
 
+  def show
+    @raw = 12
+    # raise "e"
+  end
+
   def update
     ActiveRecord::Base.transaction do
       # Update user details

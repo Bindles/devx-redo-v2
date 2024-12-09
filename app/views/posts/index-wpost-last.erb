@@ -1,0 +1,16 @@
+<div id="posts">
+  <% @posts.each do |post| %>
+    <div id="post_<%= post.id %>" class="post">
+      <h5 class="card-title"><%= post.title %></h5>
+      <p class="card-text"><%= post.body %></p>
+
+      <!-- Comments Turbo Frame -->
+      <%= turbo_frame_tag "comments_for_#{post.id}" do %>
+        <%= render post.comments %> <!-- Only render the last 3 comments initially -->
+      <% end %>
+
+      <!-- New Comment Form -->
+      <%= render 'comments/new', post: post %>
+    </div>
+  <% end %>
+</div>

@@ -1,3 +1,19 @@
-<%= turbo_frame_tag "xxx_#{@post.id}" do %>
-  <%= render @post %>
-<% end %>
+<h1><%= @post.title %></h1>
+<p><%= @post.body %></p>
+
+<h2>Comments</h2>
+
+  <!-- Display the comments -->
+  <%= turbo_stream_from @post %>
+  <div id="<%= dom_id(@post, :comments) %>">
+    <%= render @comments %> <%# need <%= render post.comments for braodcast%> >
+  </div>  
+
+
+  <!-- Paginate the comments -->
+  <div id="comments-pagination">
+    <%== pagy_nav(@pagy) %> <!-- Show pagination links if there are multiple pages -->
+  </div>
+
+
+<%= render 'comments/new', post: @post %>

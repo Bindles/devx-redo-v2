@@ -14,6 +14,7 @@ class PostsController < ApplicationController
   def index
     # raise "e"
     @posts = Post.all
+    # @pagy, @comments = pagy(@post.comments.order(created_at: :desc), items: 3)
   end
 
   # GET /posts/1 or /posts/1.json

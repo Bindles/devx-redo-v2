@@ -1,0 +1,21 @@
+<%# Styled version with all messages on the left %>
+<div id="message_<%= message.id %>" class="message">
+  <!-- Outgoing Message -->
+  <div class="d-flex flex-column align-items-start">
+    <div class="d-flex align-items-center">
+      <div class="me-2 text-center">
+        <p class="small fw-bold mb-1" style="font-size: 1rem; line-height: 1;"><%= message.sender.username %></p>
+        <img src="<%= message.sender.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>"
+             alt="Avatar" class="rounded-circle" style="width: 45px; height: 45px;">
+      </div>
+      <div>
+        <p class="small p-2 mb-1 text-white rounded-3 bg-secondary text-start" style="max-width: 300px; font-size: 1.1rem;">
+          <%= message.content %>
+        </p>
+        <small class="text-muted d-block mt-1 text-start" style="font-size: 0.9rem;">
+          <%= time_ago_in_words(message.created_at) %> ago
+        </small>
+      </div>
+    </div>
+  </div>
+</div>

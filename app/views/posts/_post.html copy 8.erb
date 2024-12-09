@@ -1,0 +1,29 @@
+<%# app/views/posts/_post.html.erb %>
+<div id="<%= dom_id(post) %>" class="post">
+  <h3><%= post.title %></h3>
+  <p><%= post.body %></p>
+  <small>Posted by: <%= post.user.email %></small>
+
+  <h4>Comments</h4>
+  <%= turbo_stream_from post %>
+  
+
+<div id="comments" data-controller="comments">
+  <%# Render the first 3 comments %>
+  <div data-comments-target="preview">
+    <%= render post.comments.last(3).reverse  %>
+  </div>
+
+  <%# Render the rest of the comments hidden initially %>
+  <div data-comments-target="all" style="display: none;">
+    <%= render post.comments.order(created_at: :desc) %> <%# .offset(3) %>
+  </div>
+
+  <%# Buttons to toggle comments %>
+  <% if post.comments.size > 3 %>
+    <button data-action="click->comments#showAll" data-comments-target="showButton">Show All Comments</button>
+    <button data-action="click->comments#hideAll" data-comments-target="hideButton" style="display: none;">Hide Comments</button>
+  <% end %>
+</div>
+
+<%= render 'comments/new', post: post %>

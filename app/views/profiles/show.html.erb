@@ -11,6 +11,9 @@
 
   </style>  
 </head>
+<%= @raw %>
+<%= controller.inspect %>
+<%= action_name %>
 <%= current_user.inspect %>
 <h1><%= @user.email %> (<%= @user.email %>)'s Profile</h1>
 <p><strong>Bio:</strong> <%= @profile.bio.presence || "No bio provided" %></p>
@@ -22,6 +25,10 @@
 <% end %>
 
 <%= link_to "Edit Profile", edit_user_profile_path(@user), class: "btn btn-primary" %>
+
+<%= @user.posts.each do |post| %>
+  <%= render 'posts/post', post: post %>
+<% end %>
 
 
 

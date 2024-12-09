@@ -1,0 +1,7 @@
+<%= form_with(model: [ post, Comment.new ], class: "mt-3") do |form| %>
+  <div class="mb-3">
+    <%= form.label :content, class: "form-label" %>
+    <%= form.text_area :content, size: '20x5', class: "form-control" %>
+  </div>
+  <%= form.submit class: "btn btn-primary" %>
+<% end %>
