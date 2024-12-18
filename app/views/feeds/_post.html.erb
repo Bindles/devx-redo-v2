@@ -1,0 +1,36 @@
+<div id="<%= dom_id(post) %>" class="card mb-4">
+  <div class="card-body text-center">
+    <img src="<%= post.user.profile.avatar_url || 'https://i.ibb.co/JzVRDVg/83fddc68a0c7.png' %>" 
+         alt="Avatar" class="rounded-circle mb-3" style="width: 100px; height: 100px; object-fit: cover;">
+    <h5 class="card-title"><%= post.user.username %></h5>
+    <p class="card-text text-muted"><%= truncate(post.body, length: 150) %></p>
+
+    <div class="d-flex gap-3 justify-content-center">
+      <%= link_to "Comments #{post.comments.count}", '#', class: "btn btn-info btn-sm text-white" %>
+      <% if current_user.friends.include?(post.user) %>
+        <button class="btn btn-secondary btn-sm" disabled>
+          <i class="bi bi-check-circle"></i> Friend
+        </button>
+      <% else %>
+        <%= button_to "Add Friend", friendships_path(friend_id: post.user.id), method: :post, class: "btn btn-success btn-sm" %>
+      <% end %>
+      <%= link_to "View Profile", user_profile_path(post.id), class: "btn btn-primary btn-sm text-white" %>
+    </div>
+
+    <%= render 'comments/comments', commentable: post, post: post %>
+  </div>
+
+  <button 
+    class="btn btn-primary btn-sm" 
+    type="button" 
+    data-bs-toggle="collapse" 
+    data-bs-target="#<%= dom_id(post, :new_comment_form) %>" 
+    aria-expanded="false" 
+    aria-controls="<%= dom_id(post, :new_comment_form) %>">
+    Add a Comment
+  </button>
+
+  <div id="<%= dom_id(post, :new_comment_form) %>" class="collapse">
+    <%= render 'comments/new', commentable: post, post: post %>
+  </div>
+</div>

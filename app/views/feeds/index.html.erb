@@ -1,0 +1,23 @@
+<%= turbo_stream_from :posts_list %>
+
+<span id="posts_count">
+  <%= Post.count %>
+</span>
+
+<div id="posts">
+  <h1 class="text-center mb-4">All Users' Posts</h1>
+
+  <div class="container">
+    <% if @posts.any? %>
+      <div class="row">
+        <% @posts.each do |post| %>
+          <div class="col-md-4 mb-4">
+            <%= render 'feeds/post', post: post %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-muted text-center">No posts found from users.</p>
+    <% end %>
+  </div>
+</div>
