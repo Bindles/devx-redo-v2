@@ -11,8 +11,8 @@
     <% if @posts.any? %>
       <div class="row">
         <% @posts.each do |post| %>
-          <div class="col-md-4 mb-4">
-            <%= render 'feeds/post', post: post %>
+          <div class="col-md-6 mb-4">
+            <%= render 'feed/post', post: post %>
           </div>
         <% end %>
       </div>
@@ -21,3 +21,4 @@
     <% end %>
   </div>
 </div>
+

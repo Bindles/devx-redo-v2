@@ -12,7 +12,7 @@ Rails.application.routes.draw do
     patch :update_username, on: :member
     patch :update_profile, on: :member
   end
-  resources :feeds
+  resources :feed
   resources :friendships, only: [ :index, :create, :destroy ]
   # resources :friendships, path: 'friends', as: 'friends' #how to change name to friends with path
 

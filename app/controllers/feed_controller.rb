@@ -1,4 +1,4 @@
-class FeedsController < ApplicationController
+class FeedController < ApplicationController
   def index
     @posts = Post.all
     # Get the current user's friends

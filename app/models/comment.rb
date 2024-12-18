@@ -1,3 +1,34 @@
+class Comment < ApplicationRecord
+  belongs_to :commentable, polymorphic: true
+  belongs_to :user
+
+  # Include RecordIdentifier for `dom_id`
+  include ActionView::RecordIdentifier
+
+  # Broadcast changes to the global :comments_list stream for the specific commentable
+  after_create_commit do
+    broadcast_prepend_to(:posts_list, target: dom_id(commentable, :comments), partial: "comments/comment", locals: { comment: self })
+    # broadcast_prepend_to(:posts_list, target: dom_id(commentable, :commentsx), partial: "comments/comment", locals: { comment: self })
+    # broadcast_update_to(:posts_list, target: "comments_count", html: commentable.comments.count)
+    update_count
+  end
+
+  after_update_commit do
+    broadcast_replace_to(:posts_list, target: dom_id(self), partial: "comments/comment", locals: { comment: self })
+  end
+
+  after_destroy_commit do
+    broadcast_remove_to(:posts_list, target: dom_id(self))
+    update_count
+  end
+end
+
+  def update_count
+    broadcast_update_to(:posts_list, target: "comment_count_for_#{commentable.id}", html: commentable.comments.count)
+  end
+
+
+
 # class Comment < ApplicationRecord
 #   belongs_to :user
 #   belongs_to :commentable, polymorphic: true
@@ -14,24 +45,3 @@
 #   # broadcasts_to ->(comment) { [ :posts, comment.commentable ] }, inserts_by: :prepend
 # end
 #
-class Comment < ApplicationRecord
-  belongs_to :commentable, polymorphic: true
-  belongs_to :user
-
-  # Include RecordIdentifier for `dom_id`
-  include ActionView::RecordIdentifier
-
-  # Broadcast changes to the global :comments_list stream for the specific commentable
-  after_create_commit do
-    broadcast_prepend_to(:posts_list, target: dom_id(commentable, :comments), partial: "comments/comment", locals: { comment: self })
-    # broadcast_prepend_to(:posts_list, target: dom_id(commentable, :commentsx), partial: "comments/comment", locals: { comment: self })
-  end
-
-  after_update_commit do
-    broadcast_replace_to(:posts_list, target: dom_id(self), partial: "comments/comment", locals: { comment: self })
-  end
-
-  after_destroy_commit do
-    broadcast_remove_to(:posts_list, target: dom_id(self))
-  end
-end

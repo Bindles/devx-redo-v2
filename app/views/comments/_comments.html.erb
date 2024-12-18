@@ -1,5 +1,7 @@
 <h2>Comments</h2>
-
+<span id="comments_count">
+  <%= commentable.comments.count%>
+</span>
 <div id="comments_section" data-controller="comments">
   <div id="<%= dom_id(commentable, :comments) %>" style="max-height: 142px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
     <!-- Preview Comments -->
