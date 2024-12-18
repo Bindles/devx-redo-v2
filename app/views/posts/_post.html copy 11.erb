@@ -1,0 +1,33 @@
+<div id="<%= dom_id(post) %>" class="post mb-4 p-4 rounded shadow-sm bg-white">
+  <h3 class="h4 mb-3"><%= post.title %></h3>
+  <p class="mb-2"><%= post.body %></p>
+  <small class="text-muted">Posted by: <%= post.user.email %></small>
+
+  <h4 class="mt-4">Comments</h4>
+  <%= turbo_stream_from post %>
+  
+  <div id="comments" data-controller="comments">
+    <!-- Render the first 3 comments -->
+    <div data-comments-target="preview">
+      <%= render post.comments.last(3).reverse %>
+    </div>
+
+    <!-- Render the rest of the comments, hidden initially -->
+    <div data-comments-target="all" style="display: none;">
+      <%= render post.comments.order(created_at: :desc).offset(3) %> 
+    </div>
+
+    <!-- Scrollable container for comments, always fixed height -->
+    <div class="comments-container" style="max-height: 200px; overflow-y: auto;">
+
+    </div>
+
+    <%# Buttons to toggle comments if more than 3 comments exist %>
+    <% if post.comments.size > 3 %>
+      <button data-action="click->comments#showAll" data-comments-target="showButton" class="btn btn-link mt-2">Show All Comments</button>
+      <button data-action="click->comments#hideAll" data-comments-target="hideButton" style="display: none;" class="btn btn-link mt-2">Hide Comments</button>
+    <% end %>
+  </div>
+
+  <%= render 'comments/new', post: post %>
+</div>

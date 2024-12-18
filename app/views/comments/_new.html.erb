@@ -1,8 +1,13 @@
 <%# app/views/comments/_new.html.erb %>
-<%= form_with(model: [ post, Comment.new ]) do |form| %>
-  <div>
-    <%= form.label :content %>
-    <%= form.text_area :content, size: '20x5' %>
-  </div>
-  <%= form.submit %>
+<%= turbo_frame_tag dom_id(commentable, :new_comment) do %>
+  <%#= form_with(model: [ post, Comment.new ]) do |form| %>
+  <%= form_with(model: [commentable, Comment.new], local: false) do |form| %>
+    <div>
+      <%= form.text_area :content, placeholder: "Write a comment..." %>
+    </div>
+    <div>
+      <%= form.submit "Add Comment" %>
+    </div>
+  <% end %>
 <% end %>
+

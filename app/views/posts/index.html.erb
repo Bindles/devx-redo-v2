@@ -1,10 +1,14 @@
-<%# app/views/posts/index.html.erb %>
-<h2>Posts</h2>
+<div class="xxx" id="xxx">Z:</div>
+<%= turbo_stream_from :posts_list %>
+
+<span id="posts_count">
+  <%#= Post.count %>
+</span>
 <div id="posts">
   <% @posts.each do |post| %>
-    <div id="post_<%= post.id %>" class="post">  
-      <!-- Render Posts -->
-      <%= render 'posts/post', post: post %>
-    </div>
+    <%= render post %>
+    <p>
+      <%= link_to "Show this post", post %>
+    </p>
   <% end %>
 </div>
