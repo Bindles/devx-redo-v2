@@ -1,11 +1,54 @@
 <h2>Comments</h2>
 
-<div id="comments_section">
-  <div id="<%= dom_id(commentable, :comments) %>">
-    <%= render commentable.comments.order(created_at: :desc) %>
+<div id="comments_section" data-controller="comments">
+  <div id="<%= dom_id(commentable, :comments) %>" style="max-height: 142px; overflow-y: auto; border: 1px solid #ccc; border-radius: 5px; padding: 10px;">
+    <!-- Preview Comments -->
+    <div data-comments-target="preview">
+      <%= render commentable.comments.last(3).reverse %>
+    </div>
+
+    <!-- Hidden All Comments -->
+    <div data-comments-target="all" style="display: none;">
+      <%= render commentable.comments.order(created_at: :desc) %>
+    </div>
   </div>
+
+  <% if commentable.comments.size > 3 %>
+    <div class="mt-2">
+      <button 
+        data-action="click->comments#showAll" 
+        data-comments-target="showButton" 
+        class="btn btn-outline-primary btn-sm">
+        Show All Comments
+      </button>
+      <button 
+        data-action="click->comments#hideAll" 
+        data-comments-target="hideButton" 
+        class="btn btn-outline-secondary btn-sm" 
+        style="display: none;">
+        Hide Comments
+      </button>
+    </div>
+  <% end %>
 </div>
 
+<!-- 
 <div id="new_comment_form">
   <%= render 'comments/new', commentable: commentable %>
+</div>
+-->
+<!-- Add Comment Button -->
+<button 
+  class="btn btn-primary btn-sm" 
+  type="button" 
+  data-bs-toggle="collapse" 
+  data-bs-target="#<%= dom_id(post, :new_comment_form) %>" 
+  aria-expanded="false" 
+  aria-controls="<%= dom_id(post, :new_comment_form) %>">
+  Add a Comment
+</button>
+
+<!-- Comment Form -->
+<div id="<%= dom_id(post, :new_comment_form) %>" class="collapse">
+  <%= render 'comments/new', commentable: post %>
 </div>

@@ -12,8 +12,8 @@
   <%= link_to "Show this post", post_path(post), data: { turbo_frame: :show_post_modal, bs_toggle: "modal", bs_target: "#showPostModal" }, class: "btn btn-primary" %>    
   <%= button_tag "Show in Modal", class: "btn btn-secondary show-post-modal", data: { post_id: post.id } %>
   <% if params[:action] == 'show' %>
-    <%= render 'comments/commentsx', commentable: post, post: post %>
+    <%= render 'comments/commentsx', commentable: post %>
   <% else %>
-    <%= render 'comments/comments', commentable: post, post: post %>
+    <%= render 'comments/comments', commentable: post %>
   <% end %>
 </div>

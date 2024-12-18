@@ -1,5 +1,5 @@
 <%# app/views/comments/_new.html.erb %>
-<%= turbo_frame_tag dom_id(commentable, :new_comment) do %>
+<%#= turbo_frame_tag dom_id(commentable, :new_comment) do %>
   <%#= form_with(model: [ post, Comment.new ]) do |form| %>
   <%= form_with(model: [commentable, Comment.new], local: false) do |form| %>
     <div>
@@ -9,5 +9,5 @@
       <%= form.submit "Add Comment" %>
     </div>
   <% end %>
-<% end %>
+<%# end %>
 

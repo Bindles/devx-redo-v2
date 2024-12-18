@@ -2,7 +2,7 @@
 <%= turbo_stream_from :posts_list %>
 
 <span id="posts_count">
-  <%#= Post.count %>
+  <%= Post.count %>
 </span>
 <div id="posts">
   <% @posts.each do |post| %>

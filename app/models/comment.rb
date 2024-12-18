@@ -13,7 +13,7 @@
 #   # Broadcast to the specific post's comments frame
 #   # broadcasts_to ->(comment) { [ :posts, comment.commentable ] }, inserts_by: :prepend
 # end
-# 
+#
 class Comment < ApplicationRecord
   belongs_to :commentable, polymorphic: true
   belongs_to :user
@@ -24,7 +24,7 @@ class Comment < ApplicationRecord
   # Broadcast changes to the global :comments_list stream for the specific commentable
   after_create_commit do
     broadcast_prepend_to(:posts_list, target: dom_id(commentable, :comments), partial: "comments/comment", locals: { comment: self })
-    broadcast_prepend_to(:posts_list, target: dom_id(commentable, :commentsx), partial: "comments/comment", locals: { comment: self })
+    # broadcast_prepend_to(:posts_list, target: dom_id(commentable, :commentsx), partial: "comments/comment", locals: { comment: self })
   end
 
   after_update_commit do
